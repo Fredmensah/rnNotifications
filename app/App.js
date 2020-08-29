@@ -6,21 +6,50 @@ export default class App extends Component{
     constructor(props) {
         super(props);
         this.localNotify = null;
+        this.senderID = "852702009688"
     }
 
     componentDidMount() {
         this.localNotify = notificationManager;
-        this.localNotify.configure();
+        this.localNotify.configure(
+            this.onRegister,
+            this.onNotification,
+            this.onOpenNotification,
+            this.senderID
+        );
     };
 
+    onRegister(token) {
+        console.log("[Notification] Registered:", token);
+    }
+
+    onNotification(notify) {
+        console.log("[Notification] onNotification: ", notify);
+    }
+
+    onOpenNotification (notify) {
+        console.log("[Notification] onOpenNotification: ", notify);
+        alert("Open Notification");
+    }
+
     onPressSendNotification = () => {
+        const options = {
+            soundName: 'default',
+            playSound: true,
+            vibrate: true
+        };
+
         this.localNotify.showNotification(
             1,
             "App Notification",
             "Local Notification",
             {},//data,
-            {} //options
+            options //options
         )
+    };
+
+    onPressCancelNotification = () => {
+        this.localNotify.cancelAllLocalNotification();
     };
 
     render() {
@@ -37,7 +66,7 @@ export default class App extends Component{
 
               <TouchableOpacity
                   style={styles.button}
-                  //onPress={this.onPressSendNotification}
+                  onPress={this.onPressCancelNotification}
               >
                   <Text> Cancel notifications</Text>
               </TouchableOpacity>
